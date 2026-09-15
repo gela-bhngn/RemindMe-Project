@@ -1,0 +1,8 @@
+# Private local configuration and credentials
+.env
+serviceAccountKey.json
+# Installed packages and local runtime output
+node_modules/
+*.log
+# Temporary JSON database used only with DATABASE_PROVIDER=json-fallback
+src/data/database.json

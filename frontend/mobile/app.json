@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "RemindMe",
+    "slug": "remindme-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "remindme",
+    "icon": "./assets/remindme-logo.png",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/remindme-logo.png"
+    },
+    "android": {
+      "package": "com.remindme.academic",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/remindme-logo.png",
+        "backgroundColor": "#eef6ff"
+      },
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "POST_NOTIFICATIONS",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "plugins": [
+      "expo-notifications",
+      "expo-camera",
+      "expo-document-picker",
+      "expo-status-bar"
+    ]
+  }
+}

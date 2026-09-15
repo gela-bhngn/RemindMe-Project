@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RemindMe App - Smart Academic Companion</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <section id="welcomeScreen" class="welcome-screen">
+      <div class="welcome-content">
+        <div class="welcome-brand"><img src="assets/remindme-logo.png" alt="" /><span>RemindMe</span></div>
+        <p class="welcome-kicker">Your academic command center</p>
+        <h1>Make every study day<br /><span>feel more in control.</span></h1>
+        <p class="welcome-copy">Keep schedules, deadlines, notes, and classrooms together in one calm workspace built for student life.</p>
+        <div class="welcome-actions">
+          <button id="welcomeLogin" class="primary-btn" type="button">Login</button>
+          <button id="welcomeRegister" class="secondary-btn" type="button">Create an account</button>
+        </div>
+        <div class="welcome-features">
+          <div><strong>01</strong><span>Plan your week</span></div>
+          <div><strong>02</strong><span>Stay ahead of deadlines</span></div>
+          <div><strong>03</strong><span>Learn together</span></div>
+        </div>
+      </div>
+      <div class="welcome-preview" aria-hidden="true">
+        <div class="preview-top"><span>THIS WEEK</span><b>July 2026</b></div>
+        <div class="preview-title">A clearer week starts here.</div>
+        <div class="preview-bars"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="preview-task"><span class="preview-check">&#10003;</span><span><b>Programming lab</b><small>Today, 10:00 AM</small></span><em>Focus</em></div>
+        <div class="preview-task"><span class="preview-dot"></span><span><b>Review lecture notes</b><small>Tomorrow, 2:30 PM</small></span><em>Upcoming</em></div>
+      </div>
+    </section>
+
+    <section id="loginScreen" class="login-screen is-hidden">
+      <div class="login-visual">
+        <img src="assets/remindme-logo.png" alt="RemindMe logo" class="login-logo" />
+        <div>
+          <p class="eyebrow">Student workspace</p>
+          <h1>RemindMe</h1>
+          <p class="login-copy">A friendlier way to keep your classes, notes, deadlines, and reminders together.</p>
+        </div>
+      </div>
+
+      <form id="loginForm" class="login-card">
+        <img src="assets/remindme-logo.png" alt="RemindMe logo" class="login-card-logo" />
+        <h2>Welcome back</h2>
+        <p class="muted">Sign in to open your academic dashboard.</p>
+        <label>School Email <input name="email" type="email" autocomplete="email" required /></label>
+        <label>Password
+          <span class="password-field">
+            <input name="password" type="password" autocomplete="current-password" required />
+            <button class="password-toggle" type="button" data-toggle-password aria-label="Show password">&#128065;</button>
+          </span>
+        </label>
+        <button class="primary-btn" type="submit">Login</button>
+        <button id="showForgotPassword" class="text-btn" type="button">Forgot password?</button>
+        <button id="showRegister" class="text-btn" type="button">Create account</button>
+      </form>
+
+      <form id="registerForm" class="login-card is-hidden">
+        <img src="assets/remindme-logo.png" alt="RemindMe logo" class="login-card-logo" />
+        <h2>Create account</h2>
+        <p class="muted">New accounts start empty until you add or join a class.</p>
+        <label>School Email <input name="email" type="email" required /></label>
+        <label>Account Type
+          <select name="role" id="registerRole" required>
+            <option value="">Select account type</option>
+            <option value="student">Student</option>
+            <option value="faculty">Faculty</option>
+          </select>
+        </label>
+        <label id="studentIdField" class="is-hidden">Student ID <input name="studentNumber" pattern="[0-9]{4}-[0-9]{6}" /></label>
+        <label id="facultyIdField" class="is-hidden">Faculty ID <input name="facultyId" pattern="[A-Za-z]{3}-[0-9]{6}" /></label>
+        <label>Full Name <input name="name" required /></label>
+        <label>Password
+          <span class="password-field">
+            <input name="password" type="password" required />
+            <button class="password-toggle" type="button" data-toggle-password aria-label="Show password">&#128065;</button>
+          </span>
+        </label>
+        <label>Confirm Password
+          <span class="password-field">
+            <input name="confirmPassword" type="password" required />
+            <button class="password-toggle" type="button" data-toggle-password aria-label="Show password">&#128065;</button>
+          </span>
+        </label>
+        <button class="primary-btn" type="submit">Login</button>
+        <button id="showLogin" class="text-btn" type="button">Back to login</button>
+      </form>
+    </section>
+
+    <div id="appFrame" class="app-frame is-hidden">
+      <aside class="sidebar" aria-label="Main navigation">
+        <div class="brand-row">
+          <button id="appIconButton" class="brand app-icon-button" type="button" aria-label="Open app menu">
+            <img src="assets/remindme-logo.png" alt="RemindMe logo" class="brand-logo" />
+            <div class="brand-text">
+              <strong>RemindMe</strong>
+              <small>Academic Companion</small>
+            </div>
+          </button>
+        </div>
+
+        <nav id="dashboardMenu" class="nav-list dashboard-menu">
+          <button class="nav-item active" data-view="dashboard"><span class="nav-icon">H</span><span class="nav-label">Home</span></button>
+          <button class="nav-item" data-view="collaboration"><span class="nav-icon">C</span><span class="nav-label">Classroom</span></button>
+          <button class="nav-item" data-view="schedule"><span class="nav-icon">S</span><span class="nav-label">Schedule</span></button>
+          <button class="nav-item" data-view="subjects"><span class="nav-icon">B</span><span class="nav-label">Subjects</span></button>
+          <button class="nav-item" data-view="notifications"><span class="nav-icon">!</span><span class="nav-label">Notifications</span></button>
+          <button class="nav-item" data-view="calendar"><span class="nav-icon">C</span><span class="nav-label">Calendar</span></button>
+          <button id="adminApprovalsNav" class="nav-item is-hidden" data-view="adminApprovals"><span class="nav-icon">A</span><span class="nav-label">Approvals</span></button>
+          <button class="nav-item" data-view="profile"><span class="nav-icon">P</span><span class="nav-label">Profile</span></button>
+          <button class="nav-item" data-view="about"><span class="nav-icon">A</span><span class="nav-label">About App</span></button>
+          <button id="sidebarLogout" class="nav-item" type="button"><span class="nav-icon">L</span><span class="nav-label">Log Out</span></button>
+        </nav>
+
+        <div class="sidebar-actions">
+          <button id="themeToggle" class="secondary-btn icon-theme" type="button" aria-label="Toggle theme">☾</button>
+          <span id="syncStatus" class="status-pill online">Online</span>
+        </div>
+      </aside>
+
+      <main class="app-shell">
+        <header class="topbar">
+          <div>
+            <p id="todayLabel" class="eyebrow">Today</p>
+            <h1 id="viewTitle">Dashboard</h1>
+          </div>
+          <div class="top-actions">
+            <label class="search-box">
+              <span>Search</span>
+              <input id="globalSearch" type="search" placeholder="subjects, notes, tasks..." />
+            </label>
+            <button id="openQuickAdd" class="primary-btn">Search</button>
+          </div>
+        </header>
+
+        <section id="dashboard" class="view active">
+          <div id="homeClassroomBanner" class="panel home-classroom-banner is-hidden">
+            <div>
+              <p class="eyebrow">Current Classroom</p>
+              <h2 id="homeClassroomName">No classroom</h2>
+              <p id="homeClassroomMeta" class="muted"></p>
+            </div>
+            <button class="secondary-btn" type="button" data-view-jump="collaboration">Open Classroom</button>
+          </div>
+          <div id="emptyDashboard" class="empty-dashboard is-hidden">
+            <div id="homeNoClassroomPrompt">
+              <p class="muted">Create or join a classroom to get started.</p>
+              <div class="quick-actions">
+                <button class="secondary-btn" type="button" data-view-jump="collaboration">Create classroom</button>
+                <button class="secondary-btn" type="button" data-view-jump="collaboration">Join class</button>
+              </div>
+            </div>
+          </div>
+          <div class="dashboard-grid">
+            <article class="panel highlight-panel">
+              <div>
+                <p class="eyebrow">AI Priority</p>
+                <h2>Today's Focus</h2>
+              </div>
+              <div id="priorityList" class="priority-list"></div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-heading">
+                <h2>Today's Schedule</h2>
+                <button class="text-btn" data-view-jump="schedule">View all</button>
+              </div>
+              <div id="todaySchedule" class="stack-list"></div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-heading">
+                <h2>Upcoming Deadlines</h2>
+                <button class="text-btn" data-view-jump="tasks">Manage</button>
+              </div>
+              <div id="deadlineList" class="stack-list"></div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-heading">
+                <h2>Announcements</h2>
+                <button class="text-btn" data-view-jump="announcements">Open</button>
+              </div>
+              <div id="announcementList" class="stack-list"></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="schedule" class="view">
+          <div class="panel">
+            <div class="panel-heading"><h2>Weekly Classes</h2></div>
+            <div id="scheduleBoard" class="schedule-board"></div>
+          </div>
+
+          <div id="scheduleDetailPanel" class="panel is-hidden">
+            <div class="panel-heading">
+              <h2 id="selectedScheduleSubject">Schedule Details</h2>
+            </div>
+            <div class="detail-columns">
+              <div>
+                <h3>Notes</h3>
+                <div id="selectedScheduleNotes" class="stack-list"></div>
+              </div>
+              <div>
+                <h3>Announcements</h3>
+                <div id="selectedScheduleAnnouncements" class="stack-list"></div>
+              </div>
+              <div>
+                <h3>Activity</h3>
+                <div id="selectedScheduleTasks" class="stack-list"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="subjects" class="view">
+          <div class="panel">
+            <div class="panel-heading">
+              <h2>Subject Workspaces</h2>
+              <button class="primary-btn" data-prefill="subject">New Subject</button>
+            </div>
+            <div id="subjectGrid" class="card-grid"></div>
+          </div>
+        </section>
+
+        <section id="subjectDetail" class="view">
+          <div class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Subject Workspace</p>
+                <h2 id="subjectDetailTitle">Subject Details</h2>
+              </div>
+              <button id="backToSubjects" class="secondary-btn" type="button">Back to Subjects</button>
+            </div>
+            <div id="subjectDetailSummary" class="subject-detail-summary"></div>
+          </div>
+          <div class="subject-detail-grid">
+            <button class="panel section-toggle-btn" data-subject-feature="notes" type="button">Notes</button>
+            <button class="panel section-toggle-btn" data-subject-feature="tasks" type="button">Activities</button>
+            <button class="panel section-toggle-btn" data-subject-feature="announcements" type="button">Announcements</button>
+          </div>
+        </section>
+
+        <section id="subjectFeature" class="view">
+          <div class="panel">
+            <div class="panel-heading"><h2 id="subjectFeatureTitle">Subject Feature</h2><button id="backToSubjectDetail" class="secondary-btn" type="button">Back to Subject</button></div>
+            <div id="subjectFeatureList" class="stack-list"></div>
+            <form id="subjectNoteForm" class="form-grid subject-entry-form is-hidden">
+                <input name="title" placeholder="Note title" required />
+                <textarea name="content" placeholder="Add subject notes" required></textarea>
+                <label>Attach file <input name="file" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.png,.jpg,.jpeg" /></label>
+                <button class="secondary-btn" type="submit">Add Note</button>
+            </form>
+            <form id="subjectTaskForm" class="form-grid subject-entry-form is-hidden">
+                <input name="title" placeholder="Activity title" required />
+                <input name="dueDate" type="date" required />
+                <textarea name="description" placeholder="Activity details"></textarea>
+                <button class="secondary-btn" type="submit">Add Activity</button>
+            </form>
+            <form id="subjectAnnouncementForm" class="form-grid subject-entry-form is-hidden">
+                <input name="title" placeholder="Announcement title" required />
+                <textarea name="message" placeholder="Share an announcement" required></textarea>
+                <button class="secondary-btn" type="submit">Add Announcement</button>
+            </form>
+          </div>
+        </section>
+
+        <section id="postDetail" class="view">
+          <div class="panel">
+            <div class="panel-heading"><div><p class="eyebrow" id="postDetailType">Post</p><h2 id="postDetailTitle">Post details</h2></div><button id="backToPostSource" class="secondary-btn" type="button">Back</button></div>
+            <div id="postDetailContent" class="item-card"></div>
+            <h3>Comments</h3><div id="postCommentList" class="stack-list"></div>
+            <form id="postCommentForm" class="form-grid"><textarea name="comment" placeholder="Write a comment..." required></textarea><button class="primary-btn" type="submit">Post Comment</button></form>
+          </div>
+        </section>
+
+        <section id="tasks" class="view">
+          <div class="split-layout">
+            <form id="taskForm" class="panel form-panel">
+              <h2>Add Academic Task</h2>
+              <div class="form-grid">
+                <label>Title <input name="title" required /></label>
+                <label>Subject <input name="subject" required /></label>
+                <label>Type
+                  <select name="type">
+                    <option>Homework</option><option>Laboratory</option><option>Activity</option>
+                    <option>Seatwork</option><option>Quiz</option><option>Midterm Project</option>
+                    <option>Final Project</option><option>Exam</option>
+                  </select>
+                </label>
+                <label>Due Date <input name="dueDate" type="date" required /></label>
+                <label>Difficulty
+                  <select name="difficulty">
+                    <option>Easy</option><option>Medium</option><option>Hard</option>
+                  </select>
+                </label>
+                <label>Workload Hours <input name="workload" type="number" min="1" max="24" value="2" /></label>
+                <label>Description <textarea name="description"></textarea></label>
+              </div>
+              <button class="primary-btn" type="submit">Save Task</button>
+            </form>
+
+            <div class="panel">
+              <div class="panel-heading">
+                <h2>Assignments & Deadlines</h2>
+                <select id="taskFilter">
+                  <option value="all">All</option>
+                  <option value="upcoming">Upcoming</option>
+                  <option value="completed">Completed</option>
+                  <option value="overdue">Overdue</option>
+                </select>
+              </div>
+              <div id="taskList" class="stack-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="notes" class="view">
+          <div class="split-layout">
+            <form id="noteForm" class="panel form-panel">
+              <h2>Shared Notes</h2>
+              <div class="form-grid">
+                <label>Title <input name="title" required /></label>
+                <label>Subject <input name="subject" required /></label>
+                <label>Content <textarea name="content" rows="6"></textarea></label>
+                <label>Material Link <input name="link" type="url" placeholder="https://..." /></label>
+                <label>Upload File <input name="file" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.png,.jpg,.jpeg" /></label>
+              </div>
+              <button class="primary-btn" type="submit">Add Note</button>
+            </form>
+            <div class="panel">
+              <h2>Notes, Files & Study Materials</h2>
+              <div id="noteList" class="stack-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="announcements" class="view">
+          <div class="panel">
+            <div id="fullAnnouncementList" class="stack-list"></div>
+          </div>
+        </section>
+
+        <section id="notifications" class="view">
+          <div class="panel">
+            <div class="panel-heading">
+              <h2>Notifications</h2>
+              <button id="enableNotifications" class="secondary-btn" type="button">Enable phone/browser alerts</button>
+            </div>
+              <div id="notificationFeed" class="notification-feed"></div>
+          </div>
+        </section>
+
+        <section id="calendar" class="view">
+          <div class="panel">
+            <div class="panel-heading">
+              <h2>Academic Calendar</h2>
+              <div class="legend">
+                <span class="dot completed"></span>Completed
+                <span class="dot upcoming"></span>Upcoming
+                <span class="dot overdue"></span>Overdue
+                <span class="dot today"></span>Today
+              </div>
+            </div>
+            <div id="calendarGrid" class="calendar-grid"></div>
+          </div>
+        </section>
+
+        <section id="collaboration" class="view">
+          <div class="split-layout">
+            <div class="panel form-panel" id="classroomEmptyState">
+              <h2>Classroom</h2>
+              <p class="muted">No current classroom.</p>
+              <div class="quick-actions">
+                <button id="showCreateClassroomForm" class="primary-btn" type="button">Create Classroom</button>
+                <button id="showJoinClassroomForm" class="secondary-btn" type="button">Join Classroom</button>
+              </div>
+              <form id="classroomForm" class="form-grid is-hidden">
+                <label>Classroom Name <input name="name" placeholder="e.g., CS 101" required /></label>
+                <label>Section/Code <input name="section" placeholder="e.g., A1" /></label>
+                <label>Subject <input name="subject" placeholder="e.g., Introduction to Programming" /></label>
+                <label>Room <input name="room" placeholder="e.g., Lab 3" /></label>
+                <label>School Year <input name="schoolYear" value="2026-2027" /></label>
+                <label>Semester <select name="semester"><option>1st Semester</option><option>2nd Semester</option><option>Summer</option></select></label>
+                <label>Description <textarea name="description" placeholder="Optional description"></textarea></label>
+                <button class="primary-btn" type="submit">Create Classroom</button>
+              </form>
+              <form id="joinClassroomForm" class="form-grid is-hidden">
+                <label>Classroom Code <input name="code" placeholder="Enter classroom code" required /></label>
+                <button class="secondary-btn" type="submit">Join Classroom</button>
+              </form>
+            </div>
+
+            <div class="panel is-hidden" id="classroomJoinedState">
+              <div class="panel-heading">
+                <h2>Classroom Details</h2>
+                <div class="quick-actions">
+                  <button id="addAnotherSchedule" class="secondary-btn is-hidden" type="button">Add Another Schedule</button>
+                  <button id="leaveClassroomButton" class="secondary-btn" type="button">Leave Class</button>
+                </div>
+              </div>
+              <div id="classroomSummary" class="classroom-summary"></div>
+              <div id="classroomScheduleSetup" class="schedule-setup is-hidden">
+                <div id="classroomScheduleSetupOptions">
+                  <h2>Set Up Your Class Schedule</h2>
+                  <p class="muted">Choose how you want to add the schedule for this classroom.</p>
+                </div>
+                <div id="classroomScheduleSetupActions" class="quick-actions">
+                  <button id="showManualScheduleForm" class="primary-btn" type="button">Add Manually</button>
+                  <label class="secondary-btn upload-btn">
+                    Upload Schedule Image
+                    <input id="classroomScheduleImage" type="file" accept="image/*" />
+                  </label>
+                </div>
+                <form id="classroomScheduleForm" class="form-grid is-hidden">
+                  <label>Subject <input name="subject" required /></label>
+                  <label>Instructor <input name="instructor" required /></label>
+                  <label>Classroom <input name="room" required /></label>
+                  <label>Day
+                    <select name="day">
+                      <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+                      <option>Thursday</option><option>Friday</option><option>Saturday</option>
+                    </select>
+                  </label>
+                  <label>Start Time <input name="startTime" type="time" required /></label>
+                  <label>End Time <input name="endTime" type="time" required /></label>
+                  <label>Semester <input name="semester" value="1st Semester" /></label>
+                  <label>School Year <input name="schoolYear" value="2026-2027" /></label>
+                  <label class="checkbox-row"><input name="shareWithClassroom" type="checkbox" checked /> Share this schedule with the classroom</label>
+                  <button class="primary-btn" type="submit">Save Schedule</button>
+                </form>
+                <div id="classroomScheduleReview" class="schedule-review is-hidden"></div>
+              </div>
+              <div class="space-top">
+                <h2>Class Schedule</h2>
+                <div id="classroomScheduleList" class="classroom-schedule-list"></div>
+              </div>
+            </div>
+
+            <div class="panel classroom-members-panel" id="classroomMembersPanel">
+              <button id="toggleClassroomInvite" class="section-toggle-btn" type="button">Class QR / Link</button>
+              <button id="toggleClassroomMembers" class="section-toggle-btn" type="button" aria-expanded="false">Class Members</button>
+              <button id="toggleClassroomAnnouncements" class="section-toggle-btn" type="button" aria-expanded="false">Class Announcements</button>
+              <button id="toggleClassroomNotes" class="section-toggle-btn" type="button" aria-expanded="false">Class Notes</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="classroomMembersView" class="view"><div class="panel"><div class="panel-heading"><h2>Class Members</h2><button data-view-jump="collaboration" class="secondary-btn" type="button">Back to Classroom</button></div><button id="toggleAttendance" class="primary-btn" type="button">Take Attendance</button><div id="attendancePanel" class="is-hidden"><div id="attendanceList" class="stack-list"></div><button id="saveAttendance" class="primary-btn" type="button">Save Attendance</button></div><div id="memberList" class="stack-list space-top"></div></div></section>
+        <section id="classroomAnnouncementsView" class="view"><div class="panel"><div class="panel-heading"><h2>Class Announcements</h2><button data-view-jump="collaboration" class="secondary-btn" type="button">Back to Classroom</button></div><button id="showClassroomAnnouncementForm" class="secondary-btn" type="button">Add Announcement</button><form id="classroomAnnouncementForm" class="form-grid is-hidden"><label>Title <input name="title" required /></label><label>Message <textarea name="message" required></textarea></label><button class="primary-btn" type="submit">Post Announcement</button></form><div id="classroomAnnouncementList" class="stack-list space-top"></div></div></section>
+        <section id="classroomNotesView" class="view"><div class="panel"><div class="panel-heading"><h2>Class Notes</h2><button data-view-jump="collaboration" class="secondary-btn" type="button">Back to Classroom</button></div><button id="showClassroomNoteForm" class="secondary-btn" type="button">Add Class Note</button><form id="classroomNoteForm" class="form-grid is-hidden"><label>Title <input name="title" required /></label><label>Details <textarea name="content" required></textarea></label><button class="primary-btn" type="submit">Save Note</button></form><div id="classroomNoteList" class="stack-list space-top"></div></div></section>
+
+        <section id="adminApprovals" class="view">
+          <div class="panel">
+            <div class="panel-heading">
+              <div><p class="eyebrow">Administrator</p><h2>Account Approvals</h2></div>
+              <button id="refreshAdminApprovals" class="secondary-btn" type="button">Refresh</button>
+            </div>
+            <p class="muted">Approve or reject registered student and faculty accounts.</p>
+            <div id="adminApprovalList" class="stack-list space-top"><p class="muted">Loading registrations…</p></div>
+          </div>
+        </section>
+
+        <section id="profile" class="view">
+          <div class="profile-layout">
+            <div class="panel profile-summary-panel">
+              <div class="profile-header-row">
+                <div class="profile-user">
+                  <div class="profile-avatar" id="profileAvatar">A</div>
+                  <div>
+                    <h2 id="profileDisplayName">Student</h2>
+                    <p id="profileDisplayEmail" class="muted">student@example.com</p>
+                  </div>
+                </div>
+
+                <div class="profile-settings-wrap">
+                  <button id="profileSettingsButton" class="profile-settings-button" type="button" aria-label="Open profile settings">⋯</button>
+                  <div id="profileSettingsMenu" class="profile-settings-menu is-hidden">
+                    <button id="editProfileButton" type="button">Edit Profile</button>
+                    <button id="profileForgotPassword" type="button">Forgot Password</button>
+                    <button id="deleteAccountButton" type="button">Delete Account</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="profile-info-block">
+                <h3>Academic Information</h3>
+                <div class="info-row"><span>Full Name</span><strong id="profileFullName">-</strong></div>
+                <div class="info-row"><span>Student Number / ID</span><strong id="profileStudentNumber">-</strong></div>
+                <div class="info-row"><span>Age</span><strong id="profileAge">-</strong></div>
+                <div class="info-row"><span>Address</span><strong id="profileAddress">-</strong></div>
+                <div class="info-row"><span>Course</span><strong id="profileCourse">-</strong></div>
+                <div class="info-row"><span>Year Level</span><strong id="profileYearLevel">-</strong></div>
+                <div class="info-row"><span>Semester</span><strong id="profileSemester">-</strong></div>
+              </div>
+            </div>
+
+            <div class="panel profile-edit-panel is-hidden" id="profileEditPanel">
+              <h2>Edit Profile</h2>
+              <form id="profileForm" class="form-grid">
+                <label>Full Name <input name="name" required readonly /></label>
+                <label>Email <input name="email" type="email" required readonly /></label>
+                <label>Student Number <input name="studentNumber" readonly /></label>
+                <label>Birthdate <input name="birthdate" type="date" /></label>
+                <label>Age <input name="age" inputmode="numeric" readonly /></label>
+                <label>Address <textarea name="address"></textarea></label>
+                <label>Course <input name="course" /></label>
+                <label>Year Level <input name="yearLevel" /></label>
+                <label>Semester <input name="semester" /></label>
+                <button class="primary-btn" type="submit">Save Profile</button>
+              </form>
+            </div>
+
+            <div class="panel profile-delete-panel is-hidden" id="profileDeletePanel">
+              <h2>Delete Account</h2>
+              <p class="muted">This action cannot be undone. Confirm your email to continue.</p>
+              <form id="deleteAccountForm" class="form-grid">
+                <label>Email <input name="email" type="email" required /></label>
+                <button class="danger-btn" type="submit">Delete My Account</button>
+                <button id="cancelDeleteAccount" class="secondary-btn" type="button">Cancel</button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+          <section id="about" class="view">
+          <div class="panel">
+            <h2>About App</h2>
+            <p class="muted">Your academic companion for schedules, learning tasks, class collaboration, and reminders.</p>
+          </div>
+          <div class="panel about-card">
+            <h2>RemindMe</h2>
+            <p class="muted">RemindMe helps students organize classroom schedules, subjects, notes, assignments, announcements, files, reminders, and attendance in one app.</p>
+          </div>
+          <h2 class="section-title">App Contact</h2>
+          <article class="item-card"><strong>Email</strong><p class="muted">remindme.app@gmail.com</p></article>
+          <h2 class="section-title">Developers</h2>
+          <div class="stack-list">
+            <article class="item-card"><strong>ANGEL O. BOHANGIN</strong><p class="muted">BS in COMPUTER SCIENCE - bohangin.angel@gmail.com</p></article>
+            <article class="item-card"><strong>AICELLE A. SARONG</strong><p class="muted">BS in COMPUTER SCIENCE - aicelle.sarong@gmail.com</p></article>
+            <article class="item-card"><strong>JOHN XAVIER B. BAGOLOS</strong><p class="muted">BS in COMPUTER SCIENCE - johnxavierbagolos03@gmail.com</p></article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+  <dialog id="classroomLinkDialog"><form method="dialog" class="dialog-panel"><button class="icon-btn" value="cancel" aria-label="Close">x</button><h2>Class QR / Link</h2><div id="qrBox" class="qr-box"></div><input id="inviteLink" readonly /><button id="copyInvite" class="primary-btn" type="button">Copy Invitation Link</button></form></dialog>
+  <dialog id="quickDialog">
+      <form method="dialog" class="dialog-panel">
+        <button class="icon-btn" value="cancel" aria-label="Close">x</button>
+        <h2>Search</h2><p class="muted">Use the search field to find subjects, notes, tasks, and announcements.</p>
+      </form>
+    </dialog>
+    <dialog id="forgotPasswordDialog"><form id="forgotPasswordForm" class="dialog-panel"><button class="icon-btn" value="cancel" aria-label="Close">x</button><h2>Reset Password</h2><p class="muted">Verify your student number and school email, then choose a new password.</p><div class="form-grid"><label>Student Number <input name="studentNumber" required /></label><label>School Email <input name="email" type="email" required /></label><label>New Password <input name="password" type="password" required /></label><label>Confirm Password <input name="confirmPassword" type="password" required /></label></div><button class="primary-btn" type="submit">Change Password</button></form></dialog>
+
+  <script src="js/config.js"></script>
+  <script type="module" src="js/app.js"></script>
+  </body>
+</html>
