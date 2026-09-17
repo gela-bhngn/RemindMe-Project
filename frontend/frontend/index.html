@@ -63,15 +63,8 @@
         <h2>Create account</h2>
         <p class="muted">New accounts start empty until you add or join a class.</p>
         <label>School Email <input name="email" type="email" required /></label>
-        <label>Account Type
-          <select name="role" id="registerRole" required>
-            <option value="">Select account type</option>
-            <option value="student">Student</option>
-            <option value="faculty">Faculty</option>
-          </select>
-        </label>
-        <label id="studentIdField" class="is-hidden">Student ID <input name="studentNumber" pattern="[0-9]{4}-[0-9]{6}" /></label>
-        <label id="facultyIdField" class="is-hidden">Faculty ID <input name="facultyId" pattern="[A-Za-z]{3}-[0-9]{6}" /></label>
+        <label>School ID <input name="schoolId" placeholder="Student: 2024-321873 or Faculty: HES-345876" required /></label>
+        <p class="muted">Your account type is identified automatically from your school ID.</p>
         <label>Full Name <input name="name" required /></label>
         <label>Password
           <span class="password-field">

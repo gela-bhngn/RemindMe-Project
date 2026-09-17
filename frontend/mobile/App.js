@@ -125,9 +125,7 @@ export default function App() {
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [registerForm, setRegisterForm] = useState({
     email: "",
-    role: "student",
-    studentNumber: "",
-    facultyId: "",
+    schoolId: "",
     name: "",
     password: "",
     confirmPassword: ""
@@ -346,23 +344,14 @@ export default function App() {
       Alert.alert("Password mismatch", "Confirm password must match your password.");
       return;
     }
-    if (registerForm.role === "student" && !/^\d{4}-\d{6}$/.test(registerForm.studentNumber.trim())) {
-      Alert.alert("Invalid Student ID", "Use YYYY-NNNNNN, for example 2024-321873.");
-      return;
-    }
-    if (registerForm.role === "faculty" && !/^[A-Za-z]{3}-\d{6}$/.test(registerForm.facultyId.trim())) {
-      Alert.alert("Invalid Faculty ID", "Use AAA-NNNNNN, for example HES-345876.");
+    const schoolId = registerForm.schoolId.trim();
+    if (!/^\d{4}-\d{6}$/.test(schoolId) && !/^[A-Za-z]{3}-\d{6}$/.test(schoolId)) {
+      Alert.alert("Invalid School ID", "Use a Student ID (YYYY-NNNNNN) or Faculty ID (AAA-NNNNNN).");
       return;
     }
     try {
       const result = await registerUser(registerForm);
-      if (result.user.accountStatus === "pending") {
-        await clearAuthToken();
-        setAuthMode("login");
-        Alert.alert("Registration submitted", "Your account is pending administrator approval. You will be able to sign in after it is approved.");
-        return;
-      }
-      const registeredUser = { ...defaultUser, ...result.user, role: registerForm.role, studentNumber: registerForm.studentNumber, facultyId: registerForm.facultyId };
+      const registeredUser = { ...defaultUser, ...result.user };
       setHasLoadedAccountData(false);
       setUser(registeredUser); setSubjects([]); setSchedule([]); setTasks([]); setNotes([]); setAnnouncements([]); setFiles([]); setClassroom(null); setAttendance({ members: [] }); setUploadedScheduleName(""); setSelectedSubjectId("");
       await rememberAccount({ email: registeredUser.email, name: registeredUser.name });
@@ -1364,20 +1353,14 @@ function AuthScreen({ mode, form, setForm, onSubmit, onSwitch, onForgotPassword,
                   onChangeText={(email) => setForm((current) => ({ ...current, email }))}
                   palette={palette}
                 />
-                <Text style={[styles.fieldLabel, { color: palette.muted }]}>Account Type</Text>
-                <View style={styles.rolePicker}>
-                  {["student", "faculty"].map((role) => (
-                    <TouchableOpacity key={role} onPress={() => setForm((current) => ({ ...current, role }))} style={[styles.roleOption, { borderColor: palette.line, backgroundColor: form.role === role ? palette.blue : palette.input }]}>
-                      <Text style={{ color: form.role === role ? "white" : palette.ink, fontWeight: "800" }}>{role === "student" ? "Student" : "Faculty"}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
                 <Field
-                  label={form.role === "faculty" ? "Faculty ID" : "Student ID"}
-                  value={form.role === "faculty" ? form.facultyId : form.studentNumber}
-                  onChangeText={(value) => setForm((current) => form.role === "faculty" ? ({ ...current, facultyId: value }) : ({ ...current, studentNumber: value }))}
+                  label="School ID"
+                  value={form.schoolId}
+                  placeholder="2024-321873 or HES-345876"
+                  onChangeText={(schoolId) => setForm((current) => ({ ...current, schoolId }))}
                   palette={palette}
                 />
+                <Text style={[styles.cardMeta, { color: palette.muted }]}>Your account type is identified automatically from your school ID.</Text>
                 <Field
                   label="Full Name"
                   value={form.name}

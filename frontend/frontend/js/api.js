@@ -25,11 +25,11 @@ export async function loginUser(credentials) {
   return { user: data.user, token: data.session.access_token };
 }
 
-export async function registerUser({ email, password, name, role, studentNumber, facultyId }) {
+export async function registerUser({ email, password, name, schoolId }) {
   const response = await fetch(`${API_URL}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password, name, role, studentNumber, facultyId })
+    body: JSON.stringify({ email, password, name, schoolId })
   });
   const result = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(result.message || "Unable to create account.");

@@ -8,13 +8,14 @@ export async function register(req, res, next) {
     const email = String(req.body.email || "").trim().toLowerCase();
     const password = String(req.body.password || "");
     const name = String(req.body.name || "").trim();
-    const role = String(req.body.role || "").trim().toLowerCase();
-    const studentNumber = String(req.body.studentNumber || "").trim();
-    const facultyId = String(req.body.facultyId || "").trim().toUpperCase();
+    const schoolId = String(req.body.schoolId || req.body.studentNumber || req.body.facultyId || "").trim();
+    const isStudent = /^\d{4}-\d{6}$/.test(schoolId);
+    const isFaculty = /^[A-Za-z]{3}-\d{6}$/.test(schoolId);
+    const role = isStudent ? "student" : isFaculty ? "faculty" : "";
+    const studentNumber = isStudent ? schoolId : "";
+    const facultyId = isFaculty ? schoolId.toUpperCase() : "";
     if (!email || !password || !name) return res.status(400).json({ message: "Email, password, and name are required." });
-    if (!["student", "faculty"].includes(role)) return res.status(400).json({ message: "Choose Student or Faculty account type." });
-    if (role === "student" && !/^\d{4}-\d{6}$/.test(studentNumber)) return res.status(400).json({ message: "Student ID must use YYYY-NNNNNN." });
-    if (role === "faculty" && !/^[A-Z]{3}-\d{6}$/.test(facultyId)) return res.status(400).json({ message: "Faculty ID must use AAA-NNNNNN." });
+    if (!role) return res.status(400).json({ message: "Use a Student ID (YYYY-NNNNNN) or Faculty ID (AAA-NNNNNN)." });
 
     const { data, error } = await getSupabase().auth.admin.createUser({
       email,
@@ -24,11 +25,11 @@ export async function register(req, res, next) {
     });
     if (error) return res.status(error.status || 400).json({ message: error.message });
 
-    const profile = { name, email, role, accountStatus: "pending", ...(role === "student" ? { studentNumber } : { facultyId }) };
+    const profile = { name, email, role, accountStatus: "active", ...(role === "student" ? { studentNumber } : { facultyId }) };
     await saveSupabaseProfile(data.user.id, profile);
     await saveRoleProfile(data.user.id, profile);
     await writeSupabaseWorkspace(data.user.id, emptyWorkspace(profile));
-    await addActivityLog(data.user.id, "ACCOUNT_REGISTERED", { role, accountStatus: "pending" }, "account", data.user.id);
+    await addActivityLog(data.user.id, "ACCOUNT_REGISTERED", { role, accountStatus: "active" }, "account", data.user.id);
     res.status(201).json({ user: publicUser(data.user, profile) });
   } catch (error) { next(error); }
 }

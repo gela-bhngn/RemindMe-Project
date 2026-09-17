@@ -677,6 +677,10 @@ textarea {
   gap: 8px;
 }
 
+.item-card[data-open-post] {
+  cursor: pointer;
+}
+
 .enrollment-card {
   display: grid;
   gap: 4px;

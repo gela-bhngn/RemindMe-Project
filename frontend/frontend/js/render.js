@@ -87,6 +87,7 @@ export function renderNotes(notes) {
       <p>${note.content || ""}</p>
       <div class="item-meta">${note.subject}${note.fileName ? ` | <a href="${note.fileUrl || "#"}" target="_blank" rel="noreferrer">${note.fileName}</a>` : ""}${note.link ? ` | <a href="${note.link}" target="_blank" rel="noreferrer">Material link</a>` : ""}</div>
       <div class="quick-actions">
+        <button class="text-btn" type="button" data-open-post="note" data-post-id="${note.id}">Comments</button>
         <button class="text-btn" type="button" data-edit-note="${note.id}">Edit</button>
         <button class="text-btn" type="button" data-delete-note="${note.id}">Delete</button>
       </div>
@@ -102,6 +103,7 @@ export function renderAnnouncements(announcements) {
       <p>${item.message}</p>
       <div class="item-meta">${item.audience || "Class"} | ${item.date}</div>
       <div class="quick-actions">
+        <button class="text-btn" type="button" data-open-post="announcement" data-post-id="${item.id}">Comments</button>
         <button class="text-btn" type="button" data-edit-announcement="${item.id}">Edit</button>
         <button class="text-btn" type="button" data-delete-announcement="${item.id}">Delete</button>
       </div>
@@ -263,7 +265,7 @@ export function renderCollaboration(state) {
     ? classroomAnnouncements.map((item) => `<article class="item-card"><strong>${item.title}</strong><p>${item.message || ""}</p><div class="item-meta">${item.date || "No date"}</div>${isFacultyCreator ? `<div class="quick-actions"><button class="text-btn" type="button" data-edit-announcement="${item.id}">Edit</button><button class="text-btn" type="button" data-delete-announcement="${item.id}">Delete</button></div>` : ""}</article>`).join("")
     : "<p class='muted'>No class announcements yet.</p>";
   if (noteList) noteList.innerHTML = classroomNotes.length
-    ? classroomNotes.map((item) => `<article class="item-card"><strong>${item.title}</strong><p>${item.content || ""}</p></article>`).join("")
+    ? classroomNotes.map((item) => `<article class="item-card" data-open-post="note" data-post-id="${item.id}"><strong>${item.title}</strong><p>${item.content || ""}</p><div class="quick-actions"><button class="text-btn" type="button" data-open-post="note" data-post-id="${item.id}">Comments</button></div></article>`).join("")
     : "<p class='muted'>No class notes yet.</p>";
 
   const qrBox = document.getElementById("qrBox");
@@ -321,13 +323,14 @@ function taskTemplate(task) {
         <span>Due ${task.dueDate}</span>
         <span class="badge ${status}">${status}</span>
       </div>
+      <div class="quick-actions"><button class="text-btn" type="button" data-open-post="task" data-post-id="${task.id}">Comments</button></div>
     </article>
   `;
 }
 
 function announcementTemplate(item) {
   return `
-    <article class="item-card">
+    <article class="item-card" data-open-post="announcement" data-post-id="${item.id}">
       <strong>${item.title}</strong>
       <p>${item.message}</p>
       <div class="item-meta">${item.audience} | ${item.date}</div>

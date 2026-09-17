@@ -59,16 +59,6 @@ function bindNavigation() {
 }
 
 function bindForms() {
-  document.getElementById("registerRole")?.addEventListener("change", (event) => {
-    const isStudent = event.target.value === "student";
-    const isFaculty = event.target.value === "faculty";
-    const student = document.querySelector("#studentIdField input");
-    const faculty = document.querySelector("#facultyIdField input");
-    document.getElementById("studentIdField").classList.toggle("is-hidden", !isStudent);
-    document.getElementById("facultyIdField").classList.toggle("is-hidden", !isFaculty);
-    student.required = isStudent;
-    faculty.required = isFaculty;
-  });
   document.getElementById("loginForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     const data = formData(event.target);
@@ -86,8 +76,9 @@ function bindForms() {
   document.getElementById("registerForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     const data = formData(event.target);
-    if (data.role === "student" && !/^\d{4}-\d{6}$/.test(data.studentNumber || "")) return alert("Student ID must use YYYY-NNNNNN.");
-    if (data.role === "faculty" && !/^[A-Za-z]{3}-\d{6}$/.test(data.facultyId || "")) return alert("Faculty ID must use AAA-NNNNNN.");
+    const schoolId = data.schoolId.trim();
+    const role = /^\d{4}-\d{6}$/.test(schoolId) ? "student" : /^[A-Za-z]{3}-\d{6}$/.test(schoolId) ? "faculty" : "";
+    if (!role) return alert("Enter a Student ID (YYYY-NNNNNN) or Faculty ID (AAA-NNNNNN).");
     if (data.password !== data.confirmPassword) {
       alert("Password and confirm password must match.");
       return;
@@ -100,7 +91,7 @@ function bindForms() {
         return;
       }
       state = structuredClone(emptyStudentState);
-      state.profile = { name: data.name, email: data.email, role: data.role, studentNumber: data.studentNumber || "", facultyId: data.facultyId || "", birthdate: "", age: "", address: "", course: "", yearLevel: "", semester: "" };
+      state.profile = { name: data.name, email: data.email, role: result.user.role, studentNumber: result.user.studentNumber || "", facultyId: result.user.facultyId || "", birthdate: "", age: "", address: "", course: "", yearLevel: "", semester: "" };
       rememberAccount({ email: data.email, name: data.name });
       saveState(state);
       sessionStorage.setItem("remindme-session", "active");
@@ -469,6 +460,11 @@ function bindActions() {
   document.getElementById("backToSubjectDetail").addEventListener("click", () => openSubjectWorkspace(activeSubjectWorkspace));
   document.getElementById("backToPostSource").addEventListener("click", () => showView(activeSubjectFeature ? "subjectFeature" : "subjects"));
   document.addEventListener("click", (event) => {
+    const postButton = event.target.closest("button[data-open-post]");
+    if (postButton) {
+      openPost(postButton.dataset.openPost, postButton.dataset.postId);
+      return;
+    }
     if (event.target.closest("button, a, input, textarea")) return;
     const card = event.target.closest("[data-open-post]");
     if (card) openPost(card.dataset.openPost, card.dataset.postId);
@@ -814,7 +810,8 @@ function openSubjectFeature(feature) {
         : `${escapeMarkup(item.message || "No message")}<div class="item-meta">${escapeMarkup(item.date || "No date")}</div>`;
     const actions = feature === "tasks" ? `<button class="text-btn" data-toggle-task="${item.id}" type="button">Mark ${item.status === "Completed" ? "Upcoming" : "Completed"}</button>`
       : feature === "announcements" ? `<button class="text-btn" data-edit-announcement="${item.id}" type="button">Edit</button><button class="text-btn" data-delete-announcement="${item.id}" type="button">Delete</button>` : "";
-    return `<article class="item-card"><strong>${escapeMarkup(item.title)}</strong><div>${body}</div><div class="quick-actions">${actions}</div></article>`;
+    const postType = feature === "tasks" ? "task" : feature === "notes" ? "note" : "announcement";
+    return `<article class="item-card" data-open-post="${postType}" data-post-id="${item.id}"><strong>${escapeMarkup(item.title)}</strong><div>${body}</div><div class="quick-actions"><button class="text-btn" type="button" data-open-post="${postType}" data-post-id="${item.id}">Comments</button>${actions}</div></article>`;
   }).join("") : `<p class="muted">No ${labels[feature].toLowerCase()} for this subject yet.</p>`;
   ["subjectNoteForm", "subjectTaskForm", "subjectAnnouncementForm"].forEach((id) => document.getElementById(id).classList.toggle("is-hidden", id !== `subject${feature === "tasks" ? "Task" : feature === "notes" ? "Note" : "Announcement"}Form`));
   showView("subjectFeature");
@@ -1009,9 +1006,9 @@ function renderPostDetail() {
   const body = type === "note" ? item.content : type === "announcement" ? item.message : item.description;
   document.getElementById("postDetailType").textContent = type === "task" ? "Activity" : `${type[0].toUpperCase()}${type.slice(1)}`;
   document.getElementById("postDetailTitle").textContent = item.title;
-  document.getElementById("postDetailContent").innerHTML = `<p>${body || "No description"}</p><div class="item-meta">${item.subject || item.audience || "Class"} | ${item.date || item.dueDate || "Recently posted"}</div>`;
+  document.getElementById("postDetailContent").innerHTML = `<p>${escapeMarkup(body || "No description")}</p><div class="item-meta">${escapeMarkup(item.subject || item.audience || "Class")} | ${escapeMarkup(item.date || item.dueDate || "Recently posted")}</div>`;
   const comments = item.comments || [];
-  document.getElementById("postCommentList").innerHTML = comments.length ? comments.map((comment) => `<article class="item-card"><strong>${comment.author}</strong><p>${comment.text}</p><div class="item-meta">${new Date(comment.createdAt).toLocaleString()}</div></article>`).join("") : "<p class='muted'>No comments yet. Start the discussion.</p>";
+  document.getElementById("postCommentList").innerHTML = comments.length ? comments.map((comment) => `<article class="item-card"><strong>${escapeMarkup(comment.author)}</strong><p>${escapeMarkup(comment.text)}</p><div class="item-meta">${new Date(comment.createdAt).toLocaleString()}</div></article>`).join("") : "<p class='muted'>No comments yet. Start the discussion.</p>";
 }
 
 async function restoreVerifiedSession() {
